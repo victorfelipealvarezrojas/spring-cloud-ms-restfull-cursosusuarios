@@ -1,18 +1,19 @@
 package com.ms.cursos.service;
 
 import com.ms.cursos.model.Curso;
+import com.ms.cursos.payload.dto.CursoDto;
+import com.ms.cursos.payload.response.CursoResponse;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface CursoServiceInterface {
-    List<Curso> findAll(int page, int size, String sortBy);
+    CursoResponse findAll(int page, int size, String sortBy);
 
-    Optional<Curso> findById(Long id);
+    Optional<CursoDto> findById(Long id);
 
-    Curso save(Curso cursoDto);
+    CursoDto save(CursoDto cursoDto);
 
-    Curso update(Long id, Curso cursoDto);
+    CursoDto update(Long id, CursoDto cursoDto);
 
     void delete(Long id);
 }
