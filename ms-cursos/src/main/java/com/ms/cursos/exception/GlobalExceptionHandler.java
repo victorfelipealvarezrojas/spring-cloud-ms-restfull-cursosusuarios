@@ -1,6 +1,6 @@
 package com.ms.cursos.exception;
 
-import com.springcoud.ms.usuarios.payload.error.ErrorDetails;
+import com.ms.cursos.payload.error.ErrorDetails;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
