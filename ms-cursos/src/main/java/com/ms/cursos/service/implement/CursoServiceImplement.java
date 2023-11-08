@@ -3,6 +3,7 @@ package com.ms.cursos.service.implement;
 import com.ms.cursos.exception.ResourceNotFoundException;
 import com.ms.cursos.model.Curso;
 import com.ms.cursos.payload.dto.CursoDto;
+import com.ms.cursos.payload.dto.UsuarioDto;
 import com.ms.cursos.payload.mapper.CursoResponseMapper;
 import com.ms.cursos.payload.mapper.CursoToDto;
 import com.ms.cursos.payload.mapper.DtoToCurso;
@@ -77,6 +78,21 @@ public class CursoServiceImplement implements CursoServiceInterface {
         cursoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Curso", "id", id));
         cursoRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<UsuarioDto> assignUserToCurso(Long CursoId, UsuarioDto usuarioDto) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<UsuarioDto> createUserToCurso(Long CursoId, UsuarioDto usuarioDto) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<UsuarioDto> deleteUserToCurso(Long CursoId, UsuarioDto usuarioDto) {
+        return Optional.empty();
     }
 
     private CursoDto mapToDto(Curso curso) {
