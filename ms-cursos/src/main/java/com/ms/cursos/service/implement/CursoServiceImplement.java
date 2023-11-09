@@ -1,7 +1,9 @@
 package com.ms.cursos.service.implement;
 
+import com.ms.cursos.clients.UsuarioClientRemoteRest;
 import com.ms.cursos.exception.ResourceNotFoundException;
 import com.ms.cursos.model.Curso;
+import com.ms.cursos.model.CursoUsuario;
 import com.ms.cursos.payload.dto.CursoDto;
 import com.ms.cursos.payload.dto.UsuarioDto;
 import com.ms.cursos.payload.mapper.CursoResponseMapper;
@@ -24,9 +26,11 @@ import java.util.Optional;
 
 @Service
 public class CursoServiceImplement implements CursoServiceInterface {
-
     @Autowired
     private CursoRepository cursoRepository;
+
+    @Autowired
+    private UsuarioClientRemoteRest usuarioClientRemoteRest;
 
     @Autowired
     private CursoToDto cursoToDto;
@@ -81,18 +85,54 @@ public class CursoServiceImplement implements CursoServiceInterface {
     }
 
     @Override
+    @Transactional
     public Optional<UsuarioDto> assignUserToCurso(Long CursoId, UsuarioDto usuarioDto) {
-        return Optional.empty();
+        Curso curso = cursoRepository.findById(CursoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Curso", "id", CursoId));
+
+        UsuarioDto usuarioRemote = usuarioClientRemoteRest.getUsuarioByIdRemote(usuarioDto.getId());
+
+        CursoUsuario cursoUsuario = new CursoUsuario();
+        cursoUsuario.setId(CursoId);
+        cursoUsuario.setUsuarioId(usuarioRemote.getId());
+
+        curso.addCursoUsuario(cursoUsuario);
+        cursoRepository.save(curso);
+        return Optional.of(usuarioRemote);
     }
 
     @Override
+    @Transactional
     public Optional<UsuarioDto> createUserToCurso(Long CursoId, UsuarioDto usuarioDto) {
-        return Optional.empty();
+        Curso curso = cursoRepository.findById(CursoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Curso", "id", CursoId));
+
+        UsuarioDto newUsuarioRemote = usuarioClientRemoteRest.createUsuarioRemote(usuarioDto);
+
+        CursoUsuario cursoUsuario = new CursoUsuario();
+        cursoUsuario.setId(CursoId);
+        cursoUsuario.setUsuarioId(newUsuarioRemote.getId());
+
+        curso.addCursoUsuario(cursoUsuario);
+        cursoRepository.save(curso);
+        return Optional.of(newUsuarioRemote);
     }
 
     @Override
+    @Transactional
     public Optional<UsuarioDto> deleteUserToCurso(Long CursoId, UsuarioDto usuarioDto) {
-        return Optional.empty();
+        Curso curso = cursoRepository.findById(CursoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Curso", "id", CursoId));
+
+        UsuarioDto usuarioRemote = usuarioClientRemoteRest.getUsuarioByIdRemote(usuarioDto.getId());
+
+        CursoUsuario cursoUsuario = new CursoUsuario();
+        cursoUsuario.setId(CursoId);
+        cursoUsuario.setUsuarioId(usuarioRemote.getId());
+
+        curso.removeCursoUsuario(cursoUsuario);
+        cursoRepository.save(curso);
+        return Optional.of(usuarioRemote);
     }
 
     private CursoDto mapToDto(Curso curso) {

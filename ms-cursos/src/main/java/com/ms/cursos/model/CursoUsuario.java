@@ -3,11 +3,11 @@ package com.ms.cursos.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 @Table(name = "curso_usuario")
 public class CursoUsuario {
