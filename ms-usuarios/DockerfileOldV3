@@ -1,0 +1,25 @@
+FROM openjdk:17.0.2
+
+WORKDIR /app/ms-usuarios
+
+COPY ./pom.xml /app
+COPY ./ms-usuarios/.mvn /app/ms-usuarios/.mvn
+COPY ./ms-usuarios/mvnw /app/ms-usuarios
+COPY ./ms-usuarios/pom.xml /app/ms-usuarios
+
+# solamente descarga las dependencias y empaqueta el jar sin codigo fuente ni test y elimina el directorio target
+RUN ./mvnw clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r ./target
+# RUN ./mvnw dependency:go-offline
+
+COPY ./ms-usuarios/src /app/ms-usuarios/src
+
+RUN ./mvnw clean package -DskipTests
+
+EXPOSE 8001
+
+RUN useradd -m myuser && chown myuser:myuser /app
+
+# Ejecutar como usuario no root
+USER myuser
+
+ENTRYPOINT ["java", "-jar", "./target/ms-usuarios.jar"]

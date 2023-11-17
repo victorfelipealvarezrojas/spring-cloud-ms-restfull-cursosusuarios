@@ -1,0 +1,14 @@
+FROM openjdk:17.0.2
+
+WORKDIR /app
+
+COPY ./target/ms-usuarios-0.0.1-SNAPSHOT.jar ./ms-usuarios.jar
+
+EXPOSE 8001
+
+RUN useradd -m myuser && chown myuser:myuser /app
+
+# Ejecutar como usuario no root
+USER myuser
+
+ENTRYPOINT ["java", "-jar", "ms-usuarios.jar"]

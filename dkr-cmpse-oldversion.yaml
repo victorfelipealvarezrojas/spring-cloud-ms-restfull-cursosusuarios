@@ -1,0 +1,71 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=a123fg
+      - MYSQL_DATABASE=usuarios
+    volumes:
+      - data-vol-mysql:/var/lib/mysql
+    restart: always
+    networks:
+      - spring
+
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=sasa
+      - POSTGRES_DB=db_cursos
+    volumes:
+      - data-vol-postgres:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - spring
+
+  ms-usuarios:
+    build:
+      context: ./
+      dockerfile: ./ms-usuarios/Dockerfile
+    ports:
+      - "8001:8001"
+    env_file:
+      - ms-usuarios.env
+    depends_on:
+      - mysql
+    restart: always
+    logging: # docker logs ms-usuarios
+      driver: "json-file"
+      options:
+        max-size: "200m"
+        max-file: "10"
+
+  ms-cursos:
+    build:
+      context: ./
+      dockerfile: ./ms-cursos/Dockerfile
+    ports:
+      - "8002:8002"
+    env_file:
+      - ms-cursos.env
+    depends_on:
+      - postgres
+      - ms-usuarios
+    restart: always
+    logging: # docker logs ms-usuarios
+      driver: "json-file"
+      options:
+        max-size: "200m"
+        max-file: "10"
+
+volumes:
+  data-vol-mysql:
+  data-vol-postgres:
+
+networks:
+  spring:

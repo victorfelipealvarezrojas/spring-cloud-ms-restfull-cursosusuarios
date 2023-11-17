@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
@@ -20,6 +22,11 @@ public class UsuarioController {
             @RequestParam(name = "sortBy", defaultValue = "id", required = false) String sortBy
     ) {
         return ResponseEntity.ok(usuarioService.findAll(page, size, sortBy));
+    }
+
+    @GetMapping("/usuariosByIds")
+    public ResponseEntity<?> getAllUsuariosByIds(@RequestParam List<Long> ids) {
+        return ResponseEntity.ok(usuarioService.findAllByIds(ids));
     }
 
     @GetMapping("/{id}")
@@ -41,6 +48,6 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteUsuario(@PathVariable(name = "id") Long id) {
         usuarioService.delete(id);
-        return ResponseEntity.ok("Usuario deleted successfully");
+        return ResponseEntity.ok("Usuario deleted successfully!!!");
     }
 }

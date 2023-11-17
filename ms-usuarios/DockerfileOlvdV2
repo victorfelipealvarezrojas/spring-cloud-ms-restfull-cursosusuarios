@@ -1,0 +1,17 @@
+FROM openjdk:17.0.2
+
+WORKDIR /app/ms-usuarios
+
+COPY ./pom.xml /app
+COPY ./ms-usuarios /app/ms-usuarios
+
+RUN ./mvnw clean package -DskipTests
+
+EXPOSE 8001
+
+RUN useradd -m myuser && chown myuser:myuser /app
+
+# Ejecutar como usuario no root
+USER myuser
+
+ENTRYPOINT ["java", "-jar", "./target/ms-usuarios.jar"]

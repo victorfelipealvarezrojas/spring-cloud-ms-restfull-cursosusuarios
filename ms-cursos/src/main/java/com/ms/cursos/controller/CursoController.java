@@ -39,6 +39,15 @@ public class CursoController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("v2/{id}")
+    public ResponseEntity<CursoDto> getCursoByIds(@PathVariable(name = "id") Long id) {
+        Optional<CursoDto> cursoOptional = cursoService.FindCursoIdWithUser(id);
+
+        return cursoOptional
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<CursoDto> createCurso(@RequestBody CursoDto cursoDto) {
         return ResponseEntity.ok(cursoService.save(cursoDto));
@@ -107,7 +116,4 @@ public class CursoController {
 
         return ResponseEntity.notFound().build();
     }
-
-
-
 }

@@ -4,9 +4,11 @@ import com.ms.cursos.payload.dto.UsuarioDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(
         name = "ms-usuarios",
-        url = "localhost:8001"
+        url = "ms-usuarios:8001/api/usuarios"
 )
 public interface UsuarioClientRemoteRest {
     @GetMapping("/{id}")
@@ -14,4 +16,7 @@ public interface UsuarioClientRemoteRest {
 
     @PostMapping
     public UsuarioDto createUsuarioRemote(@RequestBody UsuarioDto usuarioDto);
+
+    @GetMapping("/usuariosByIds")
+    public List<UsuarioDto> getAllUsuariosByIdsRemote(@RequestParam Iterable<Long> ids);
 }

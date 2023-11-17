@@ -10,6 +10,7 @@ public class CursoToDto {
         return CursoDto.builder()
                 .id(curso.getId())
                 .nombre(curso.getNombre())
+                .usuarios(curso.getUsuarios())
                 .build();
     }
 }

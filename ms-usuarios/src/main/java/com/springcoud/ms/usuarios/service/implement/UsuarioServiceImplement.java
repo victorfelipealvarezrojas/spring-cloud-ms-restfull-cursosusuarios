@@ -45,6 +45,14 @@ public class UsuarioServiceImplement implements UsuarioServiceInterface {
     }
 
     @Override
+    public List<UsuarioDto> findAllByIds(Iterable<Long> ids) {
+        return usuarioRepository.findAllById(ids)
+                .stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public UsuarioDto findById(Long id) {
         return usuarioRepository.findById(id)

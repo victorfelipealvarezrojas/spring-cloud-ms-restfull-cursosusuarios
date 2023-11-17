@@ -135,6 +135,20 @@ public class CursoServiceImplement implements CursoServiceInterface {
         return Optional.of(usuarioRemote);
     }
 
+    @Override
+    public Optional<CursoDto> FindCursoIdWithUser(Long CursoId) {
+        Curso curso = cursoRepository.findById(CursoId)
+                .orElseThrow(() -> new ResourceNotFoundException("Curso", "id", CursoId));
+
+        if (!curso.getCursoUsuarios().isEmpty()) {
+            List<Long> ids = curso.getCursoUsuarios().stream().map(CursoUsuario::getUsuarioId).toList();
+            List<UsuarioDto> usuarios = usuarioClientRemoteRest.getAllUsuariosByIdsRemote(ids);
+            curso.setUsuarios(usuarios);
+            return Optional.of(cursoToDto.CursoMapToDto(curso));
+        }
+        return Optional.empty();
+    }
+
     private CursoDto mapToDto(Curso curso) {
         return new CursoToDto().CursoMapToDto(curso);
     }
