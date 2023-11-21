@@ -1,0 +1,44 @@
+version: "3.9"
+services:
+  mysql:
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=a123fg
+      - MYSQL_DATABASE=usuarios
+    volumes:
+      - data-vol-mysql:/var/lib/mysql
+    restart: always
+    networks:
+      - spring
+
+  ms-usuarios:
+    image: valvarezxxx/usuarios:latest
+    ports:
+      - "8001:8001"
+    environment:
+      - SPRING_APPLICATION_NAME=ms-usuarios
+      - SERVER_PORT=8001
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQLDialect
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/usuarios
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=a123fg
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - mysql
+    restart: always
+    networks:
+      - spring
+    logging: # docker logs ms-usuarios
+      driver: "json-file"
+      options:
+        max-size: "200m"
+        max-file: "10"
+
+volumes:
+  data-vol-mysql:
+  data-vol-postgres:
+
+networks:
+  spring:

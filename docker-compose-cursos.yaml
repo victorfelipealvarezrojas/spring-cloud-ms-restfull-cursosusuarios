@@ -1,0 +1,49 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=sasa
+      - POSTGRES_DB=db_cursos
+    volumes:
+      - data-vol-postgres:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - spring
+
+  ms-cursos:
+    image: valvarezxxx/cursos:latest
+    ports:
+      - "8002:8002"
+    environment:
+      - SPRING_APPLICATION_NAME=ms-cursos
+      - SERVER_PORT=8002
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db_cursos
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=sasa
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect
+      - SPRING_JPA_GENERATE_DLL=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - LOGGING_LEVEL_ORG_HIBERNATE_SQL=debug
+      - SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_LOB_NON_CONTEXTUAL_CREATION=true
+      - USUARIOS_SERVICE_URL=ec2-3-141-196-136.us-east-2.compute.amazonaws.com:8001/api/usuarios
+    depends_on:
+      - postgres
+    restart: always
+    networks:
+        - spring
+    logging: # docker logs ms-usuarios
+      driver: "json-file"
+      options:
+        max-size: "200m"
+        max-file: "10"
+
+volumes:
+  data-vol-postgres:
+
+networks:
+  spring:

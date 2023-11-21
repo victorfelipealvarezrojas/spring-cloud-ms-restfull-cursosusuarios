@@ -8,7 +8,7 @@ import java.util.List;
 
 @FeignClient(
         name = "ms-usuarios",
-        url = "ms-usuarios:8001/api/usuarios"
+        url = "${USUARIOS_SERVICE_URL}"
 )
 public interface UsuarioClientRemoteRest {
     @GetMapping("/{id}")
